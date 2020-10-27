@@ -2,6 +2,10 @@
 import copy
 import os
 
+import nltk
+nltk.download('punkt', download_dir='/storage2/jeperez/anaconda3/nltk_data')
+nltk.download('averaged_perceptron_tagger', download_dir='/storage2/jeperez/anaconda3/nltk_data')
+
 import numpy as np
 import omegaconf
 import torch
@@ -106,6 +110,56 @@ class HatefulMemesImageDataset(MMFDataset):
 
         images = self.image_db.from_path(image_paths, use_transforms=use_transforms)
         visualize_images(images["images"], *args, **kwargs)
+
+
+class HatefulMemesImagePOSDataset(MMFDataset):
+    def __init__(self, config, *args, dataset_name="hateful_memes", **kwargs):
+        super().__init__(dataset_name, config, *args, **kwargs)
+        assert (
+            self._use_images
+        ), "config's 'use_images' must be true to use image dataset"
+
+    def init_processors(self):
+        super().init_processors()
+        # Assign transforms to the image_db
+        self.image_db.transform = self.image_processor
+
+    def __getitem__(self, idx):
+        sample_info = self.annotation_db[idx]
+        current_sample = Sample()
+
+        processed_text = self.text_processor({"text": sample_info["text"]})
+        current_sample.text = processed_text["text"]
+        if "input_ids" in processed_text:
+            current_sample.update(processed_text)
+
+        current_sample.id = torch.tensor(int(sample_info["id"]), dtype=torch.int)
+
+        # Get the first image from the set of images returned from the image_db
+        current_sample.image = self.image_db[idx]["images"][0]
+
+        current_sample.pos_text = nltk.pos_tag(nltk.word_tokenize(sample_info["text"].lower()))
+
+        if "label" in sample_info:
+            current_sample.targets = torch.tensor(
+                sample_info["label"], dtype=torch.long
+            )
+
+        return current_sample
+
+    def format_for_prediction(self, report):
+        return generate_prediction(report)
+
+    def visualize(self, num_samples=1, use_transforms=False, *args, **kwargs):
+        image_paths = []
+        random_samples = np.random.randint(0, len(self), size=num_samples)
+
+        for idx in random_samples:
+            image_paths.append(self.annotation_db[idx]["img"])
+
+        images = self.image_db.from_path(image_paths, use_transforms=use_transforms)
+        visualize_images(images["images"], *args, **kwargs)
+
 
 
 def generate_prediction(report):

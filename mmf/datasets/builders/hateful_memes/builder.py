@@ -7,6 +7,7 @@ from mmf.common.registry import registry
 from mmf.datasets.builders.hateful_memes.dataset import (
     HatefulMemesFeaturesDataset,
     HatefulMemesImageDataset,
+    HatefulMemesImagePOSDataset
 )
 from mmf.datasets.mmf_dataset_builder import MMFDatasetBuilder
 from mmf.utils.configuration import get_mmf_env
@@ -35,6 +36,8 @@ class HatefulMemesBuilder(MMFDatasetBuilder):
 
         if config.use_features:
             self.dataset_class = HatefulMemesFeaturesDataset
+        if config.use_pos_tags:
+            self.dataset_class = HatefulMemesImagePOSDataset
 
         self.dataset = super().load(config, dataset_type, *args, **kwargs)
 

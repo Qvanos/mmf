@@ -5,6 +5,7 @@ dataset_config:
     fast_read: false
     use_images: true
     use_features: false
+    use_pos_tags: true
     images:
       train:
       - hateful_memes/defaults/images/
