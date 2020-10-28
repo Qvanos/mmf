@@ -138,7 +138,10 @@ class HatefulMemesImagePOSDataset(MMFDataset):
         # Get the first image from the set of images returned from the image_db
         current_sample.image = self.image_db[idx]["images"][0]
 
-        current_sample.pos_text = nltk.pos_tag(nltk.word_tokenize(sample_info["text"].lower()))
+        #current_sample.pos_text = nltk.pos_tag(nltk.word_tokenize(sample_info["text"].lower()))
+        current_sample.pos_text = sample_info["POS"]
+
+        current_sample.polarity = sample_info["POLARITY"]
 
         if "label" in sample_info:
             current_sample.targets = torch.tensor(
