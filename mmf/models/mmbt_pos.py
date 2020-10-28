@@ -213,7 +213,7 @@ class MMBTPOS(BaseModel):
 
     @classmethod
     def config_path(cls):
-        return "configs/models/mmbt/pretrain.yaml"
+        return "configs/models/mmbt_pos/pretrain.yaml"
 
     def forward(self, sample_list):
         return self.model(sample_list)
