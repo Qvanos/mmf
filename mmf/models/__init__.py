@@ -8,6 +8,7 @@ from .lorra import LoRRA
 from .top_down_bottom_up import TopDownBottomUp
 from .butd import BUTD
 from .mmbt import MMBT, MMBTForClassification, MMBTForPreTraining
+from .mmbt_pos import MMBTPOS, MMBTPOSForClassification
 from .cnn_lstm import CNNLSTM
 from .m4c import M4C
 from .m4c_captioner import M4CCaptioner
@@ -26,6 +27,7 @@ __all__ = [
     "BUTD",
     "MMBTForClassification",
     "MMBTForPreTraining",
+    "MMBTPOSForClassification",
     "FusionBase",
     "ConcatBoW",
     "ConcatBERT",
@@ -34,6 +36,7 @@ __all__ = [
     "M4C",
     "M4CCaptioner",
     "MMBT",
+    "MMBTPOS",
     "VisualBERT",
     "ViLBERT",
     "UnimodalBase",
