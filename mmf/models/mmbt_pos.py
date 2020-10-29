@@ -42,7 +42,6 @@ class MLP(nn.Module):
 class SyntaxMultilevelEncoding(nn.Module):
     def __init__(self, config, *args, **kwargs):
         super(SyntaxMultilevelEncoding, self).__init__()
-        #params to define:
 
         self.config = config
 

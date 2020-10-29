@@ -54,6 +54,7 @@ model_config:
         mapping_hidden_sizes: [2048,1024]
         dropout_p: .2
         concate: ['bow', 'pool','gru', 'cnn']
+        pool_channels: 512
         cnn_out_channels: 8
         cnn_kernel_sizes: [3]
         have_last_bn: True
