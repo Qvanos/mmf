@@ -39,7 +39,7 @@ class MLP(nn.Module):
         return h
 
 
-class SyntaxMultilevelEncoding(BaseModel):
+class SyntaxMultilevelEncoding(nn.Module):
     def __init__(self, config, *args, **kwargs):
         super(SyntaxMultilevelEncoding, self).__init__()
         #params to define:
