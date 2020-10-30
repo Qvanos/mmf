@@ -6,6 +6,8 @@ from mmf.utils.modeling import get_optimizer_parameters_for_bert
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from transformers.modeling_bert import BertForPreTraining, BertPredictionHeadTransform
 
 from mmf.common.registry import registry
@@ -105,9 +107,9 @@ class SyntaxMultilevelEncoding(nn.Module):
         else:
             self.embed.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, texts):
+    def forward(self, texts, lengths):
       # Level 1. Global Encoding by Max Pooling According
-      embeddings = self.embed(cap_wids)
+      embeddings = self.embed(texts)
 
       features = []
 
@@ -122,7 +124,7 @@ class SyntaxMultilevelEncoding(nn.Module):
 
       if self.concat_rnn:
         # Level 2. Temporal-Aware Encoding by biGRU
-        packed = pack_padded_sequence(embeddings, lengths, batch_first=True)
+        packed = pack_padded_sequence(embeddings, lengths, batch_first=True, enforce_sorted=False)
         rnn_out, rnn_h = self.rnn(packed)
         rnn_out, lens_unpacked = pad_packed_sequence(rnn_out, batch_first=True)
         rnn_h = torch.cat([rnn_h[0,:, :], rnn_h[1,:,:]], dim=1)
@@ -157,14 +159,11 @@ class MMBTPOSForClassification(nn.Module):
         self.pos_encoder = SyntaxMultilevelEncoding(config.syntax_encoder, *args, **kwargs)
 
         self.dropout = nn.Dropout(self.encoder_config.hidden_dropout_prob)
-        self.classifier = nn.Sequential(
-            BertPredictionHeadTransform(self.encoder_config),
-            nn.Linear(self.encoder_config.hidden_size+config.syntax_encoder.out_size, self.config.num_labels),
-        )
+
+        self.bert_transform = BertPredictionHeadTransform(self.encoder_config)
+        self.fc = nn.Linear(self.encoder_config.hidden_size+config.syntax_encoder.out_size, self.config.num_labels)
 
     def forward(self, sample_list):
-        import ipdb
-        ipdb.set_trace()
         module_output = self.bert(sample_list)
         pooled_output = module_output[1]
         output = {}
@@ -176,12 +175,13 @@ class MMBTPOSForClassification(nn.Module):
             output["extras"] = module_output[2:]
 
         pooled_output = self.dropout(pooled_output)
+        pooled_output = self.bert_transform(pooled_output)
 
-        syntax_output = self.pos_encoder(sample_list['pos_text'])
+        syntax_output = self.pos_encoder(sample_list['pos_text'], sample_list['length'])
 
-        concat_output = torch.cat((pooled_output,concat_output), dim=1)
+        concat_output = torch.cat((pooled_output, syntax_output), dim=1)
 
-        logits = self.classifier(concat_output)
+        logits = self.fc(concat_output)
         reshaped_logits = logits.contiguous().view(-1, self.config.num_labels)
         output["scores"] = reshaped_logits
 

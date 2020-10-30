@@ -1498,11 +1498,8 @@ class MultiClassFromFile(BaseProcessor):
 @registry.register_processor('pos_tagging')
 class POSTaggingProcessor(VocabProcessor):
     def __init__(self, config, *args, **kwargs):
-        vocab_processor_config = copy.deepcopy(config)
-
-        self._init_extras(vocab_processor_config)
-        self.config = vocab_processor_config
+      super().__init__(config, *args, **kwargs)
 
     def __call__(self, item, *args, **kwargs):
-      indices = super().__call__(item)["text"]
-      return {"text": indices}
+      indices = super()._map_strings_to_indices((item)["pos_tags"])
+      return {"pos_tags": indices}

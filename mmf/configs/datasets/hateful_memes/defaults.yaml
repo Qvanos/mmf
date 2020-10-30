@@ -42,7 +42,11 @@ dataset_config:
             params: {}
       pos_text_processor:
         type: pos_tagging
-        vocab_file: hateful_memes/defaults/extras/vocabs/pos_tags_vocabulary.txt
+        params:
+          max_length: 14
+          vocab:
+            type: random
+            vocab_file: hateful_memes/defaults/extras/vocabs/pos_tags_vocabulary.txt
       bbox_processor:
         type: bbox
         params:

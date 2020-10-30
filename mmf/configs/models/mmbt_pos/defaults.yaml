@@ -47,13 +47,13 @@ model_config:
     syntax_encoder:
         vocab_size: 36
         out_size: 100
-        text_norm: True
+        text_norm: False
         word_dim: 468
         we_parameter: None
         text_rnn_size: 512
         mapping_hidden_sizes: [2048,1024]
         dropout_p: .2
-        concate: ['bow', 'pool','gru', 'cnn']
+        concate: ['pool','gru', 'cnn']
         pool_channels: 512
         cnn_out_channels: 8
         cnn_kernel_sizes: [3]
