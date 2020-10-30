@@ -8,6 +8,22 @@ import torch
 import torch.nn as nn
 from transformers.modeling_bert import BertForPreTraining, BertPredictionHeadTransform
 
+from mmf.common.registry import registry
+from mmf.datasets.processors import VocabProcessor
+
+@registry.register_processor('pos_text_processor')
+class POSProcessor(VocabProcessor):
+    def __init__(self, config, *args, **kwargs):
+        vocab_processor_config = copy.deepcopy(config)
+
+        self._init_extras(vocab_processor_config)
+        self.config = vocab_processor_config
+
+    def __call__(self, item, *args, **kwargs):
+      indices = super().__call__(item)["text"]
+      return {"text": indices}
+
+
 class MLP(nn.Module):
     def __init__(self, in_size, hidden_sizes, out_size, dropout_p=0.5, have_last_bn=False, pretrained_model_path=''):
         super(MLP, self).__init__()
