@@ -15,6 +15,7 @@ from mmf.datasets.processors.processors import (
     SoftCopyAnswerProcessor,
     VocabProcessor,
     VQAAnswerProcessor,
+    POSTaggingProcessor,
 )
 
 
@@ -33,4 +34,5 @@ __all__ = [
     "CaptionProcessor",
     "MaskedTokenProcessor",
     "TorchvisionTransforms",
+    "POSTaggingProcessor",
 ]

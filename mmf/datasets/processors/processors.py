@@ -1493,3 +1493,16 @@ class MultiClassFromFile(BaseProcessor):
         assert class_index != -1, f"{label} is not present in vocab file"
 
         return {"class_index": torch.tensor(class_index, dtype=torch.long)}
+
+
+@registry.register_processor('pos_text_processor')
+class POSTaggingProcessor(VocabProcessor):
+    def __init__(self, config, *args, **kwargs):
+        vocab_processor_config = copy.deepcopy(config)
+
+        self._init_extras(vocab_processor_config)
+        self.config = vocab_processor_config
+
+    def __call__(self, item, *args, **kwargs):
+      indices = super().__call__(item)["text"]
+      return {"text": indices}
