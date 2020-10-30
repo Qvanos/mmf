@@ -87,10 +87,10 @@ class SyntaxMultilevelEncoding(nn.Module):
 
           mapping_in_size += config.cnn_out_channels * len(config.cnn_kernel_sizes)
 
-        self.text_mapping = MLP(in_size=mapping_in_size, 
-                                hidden_sizes=config.mapping_hidden_sizes, 
-                                out_size=config.out_size, 
-                                dropout_p=config.dropout_p, 
+        self.text_mapping = MLP(in_size=mapping_in_size,
+                                hidden_sizes=config.mapping_hidden_sizes,
+                                out_size=config.out_size,
+                                dropout_p=config.dropout_p,
                                 have_last_bn=config.have_last_bn)
 
         self.init_weights()
@@ -108,7 +108,7 @@ class SyntaxMultilevelEncoding(nn.Module):
       features = []
 
       if self.concat_bow:
-        features.append(cap_bows) 
+        features.append(cap_bows)
 
       if self.concat_pool:
         embed_pool = embeddings.view(embeddings.shape[0], 1, -1)
@@ -159,6 +159,8 @@ class MMBTPOSForClassification(nn.Module):
         )
 
     def forward(self, sample_list):
+        import ipdb
+        ipdb.set_trace()
         module_output = self.bert(sample_list)
         pooled_output = module_output[1]
         output = {}
