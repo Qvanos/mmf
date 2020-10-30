@@ -139,7 +139,8 @@ class HatefulMemesImagePOSDataset(MMFDataset):
         current_sample.image = self.image_db[idx]["images"][0]
 
         #current_sample.pos_text = nltk.pos_tag(nltk.word_tokenize(sample_info["text"].lower()))
-        current_sample.pos_text = sample_info["POS"]
+        processed_pos_text = self.pos_text_processor({"text": sample_info["pos_text"]})
+        current_sample.pos_text = processed_pos_text["POS"]
 
         current_sample.polarity = sample_info["POLARITY"]
 

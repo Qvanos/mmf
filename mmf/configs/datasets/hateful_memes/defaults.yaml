@@ -40,6 +40,15 @@ dataset_config:
           preprocessor:
             type: simple_sentence
             params: {}
+      pos_text_processor:
+        type: vocab
+        params:
+          max_length: 14
+          vocab:
+            vocab_file: hateful_memes/defaults/extras/vocabs/pos_tags_vocabulary.txt
+          preprocessor:
+            type: simple_sentence
+            params: {}
       bbox_processor:
         type: bbox
         params:
