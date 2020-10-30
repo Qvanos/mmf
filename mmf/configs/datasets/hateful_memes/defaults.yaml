@@ -41,6 +41,7 @@ dataset_config:
             type: simple_sentence
             params: {}
       pos_text_processor:
+        type: pos_tagging
         vocab_file: hateful_memes/defaults/extras/vocabs/pos_tags_vocabulary.txt
       bbox_processor:
         type: bbox

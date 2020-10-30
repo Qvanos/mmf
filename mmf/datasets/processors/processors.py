@@ -1495,7 +1495,7 @@ class MultiClassFromFile(BaseProcessor):
         return {"class_index": torch.tensor(class_index, dtype=torch.long)}
 
 
-@registry.register_processor('pos_text_processor')
+@registry.register_processor('pos_tagging')
 class POSTaggingProcessor(VocabProcessor):
     def __init__(self, config, *args, **kwargs):
         vocab_processor_config = copy.deepcopy(config)
