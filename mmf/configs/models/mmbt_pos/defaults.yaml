@@ -15,7 +15,7 @@ model_config:
     text_hidden_size: 768
     # Used when classification head is activated
     num_labels: 2
-    use_poalarity: true
+    use_polarity: true
     modal_encoder:
       type: resnet152
       params:
