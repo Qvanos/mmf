@@ -161,7 +161,12 @@ class MMBTPOSForClassification(nn.Module):
         self.dropout = nn.Dropout(self.encoder_config.hidden_dropout_prob)
 
         self.bert_transform = BertPredictionHeadTransform(self.encoder_config)
-        self.fc = nn.Linear(self.encoder_config.hidden_size+config.syntax_encoder.out_size, self.config.num_labels)
+
+        fc_in_size = self.encoder_config.hidden_size+config.syntax_encoder.out_size
+        if config.use_polarity:
+          fc_in_size + 4
+
+        self.fc = nn.Linear(fc_in_size, self.config.num_labels)
 
     def forward(self, sample_list):
         module_output = self.bert(sample_list)
@@ -182,8 +187,9 @@ class MMBTPOSForClassification(nn.Module):
         concat_output = torch.cat((pooled_output, syntax_output), dim=1)
 
         if self.config.use_polarity:
-          polarity = sample_list['polarity'][:, -1].unsqueeze(1)
-          concat_output = polarity * concat_output
+          #polarity = sample_list['polarity'][:, -1].unsqueeze(1)
+          polarity = sample_list['polarity']
+          concat_output = torch.cat((polarity, concat_output), dim=1)
 
         logits = self.fc(concat_output)
         reshaped_logits = logits.contiguous().view(-1, self.config.num_labels)
