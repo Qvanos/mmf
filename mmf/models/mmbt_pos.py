@@ -164,7 +164,7 @@ class MMBTPOSForClassification(nn.Module):
 
         fc_in_size = self.encoder_config.hidden_size+config.syntax_encoder.out_size
         if config.use_polarity:
-          fc_in_size + 4
+          fc_in_size += 4
 
         self.fc = nn.Linear(fc_in_size, self.config.num_labels)
 
