@@ -143,7 +143,7 @@ class HatefulMemesImagePOSDataset(MMFDataset):
         current_sample.pos_text = processed_pos_text["pos_tags"]
         current_sample.length = min(len(sample_info["POS"]), self.config.processors.text_processor.params.max_length)
 
-        current_sample.polarity = sample_info["POLARITY"]
+        current_sample.polarity = torch.tensor(sample_info["POLARITY"])
 
         if "label" in sample_info:
             current_sample.targets = torch.tensor(
