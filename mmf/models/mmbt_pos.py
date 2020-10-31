@@ -181,6 +181,10 @@ class MMBTPOSForClassification(nn.Module):
 
         concat_output = torch.cat((pooled_output, syntax_output), dim=1)
 
+        if self.config.use_polarity:
+          polarity = torch.tensor(sample_list['polarity']).mean(dim=1)
+          concat_output = polarity * concat_output
+
         logits = self.fc(concat_output)
         reshaped_logits = logits.contiguous().view(-1, self.config.num_labels)
         output["scores"] = reshaped_logits
