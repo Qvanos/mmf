@@ -9,6 +9,7 @@ from .top_down_bottom_up import TopDownBottomUp
 from .butd import BUTD
 from .mmbt import MMBT, MMBTForClassification, MMBTForPreTraining
 from .mmbt_pos import MMBTPOS, MMBTPOSForClassification
+from .mmbt_butd_pos import MMBTBUTDPOS, MMBTBUTDPOSForClassification
 from .cnn_lstm import CNNLSTM
 from .m4c import M4C
 from .m4c_captioner import M4CCaptioner
@@ -28,6 +29,7 @@ __all__ = [
     "MMBTForClassification",
     "MMBTForPreTraining",
     "MMBTPOSForClassification",
+    "MMBTBUTDPOSForClassification",
     "FusionBase",
     "ConcatBoW",
     "ConcatBERT",
@@ -37,6 +39,7 @@ __all__ = [
     "M4CCaptioner",
     "MMBT",
     "MMBTPOS",
+    "MMBTBUTDPOS",
     "VisualBERT",
     "ViLBERT",
     "UnimodalBase",

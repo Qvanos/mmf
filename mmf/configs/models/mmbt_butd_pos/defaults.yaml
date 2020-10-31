@@ -1,0 +1,65 @@
+includes:
+- configs/models/butd/defaults.yaml
+
+model_config:
+  mmbt_butd_pos:
+    # Either pretraining or classification
+    training_head_type: pretraining
+    bert_model_name: bert-base-uncased
+    direct_features_input: false
+    freeze_text: false
+    freeze_modal: false
+    freeze_complete_base: false
+    finetune_lr_multiplier: 1
+    fused_feature_only: false
+    # Dimension of the embedding finally returned by the modal encoder
+    modal_hidden_size: 2048
+    # Dimension of the embedding finally returned by the text encoder
+    text_hidden_size: 768
+    # Used when classification head is activated
+    num_labels: 2
+    use_polarity: true
+    modal_encoder:
+      type: resnet152
+      params:
+        pretrained: true
+        pool_type: avg
+        num_output_features: 1
+
+    use_modal_start_token: true
+    use_modal_end_token: true
+    text_encoder:
+      type: transformer
+      params:
+        num_segments: 2
+        bert_model_name: ${model_config.mmbt_butd_pos.bert_model_name}
+        # Options below can be overridden to update the bert configuration used
+        # to initialize the bert encoder. If some option is missing or
+        # if you are using an encoder different then BERT, add extra parameters
+        # to your projects configuration file under model_config.mmbt.
+        # Those options will automatically override the options for your transformer
+        # encoder's configuration. For e.g. vocab_size is missing here, just add
+        # vocab_size: x to update the size of the vocabulary with which encoder is
+        # initialized. If you update the default values, the transformer you
+        # will get will be initialized from scratch.
+        hidden_size: 768
+        num_hidden_layers: 12
+        num_attention_heads: 12
+        output_attentions: false
+        output_hidden_states: false
+
+    syntax_encoder:
+        vocab_size: 36
+        out_size: 100
+        text_norm: False
+        word_dim: 468
+        we_parameter: None
+        text_rnn_size: 512
+        mapping_hidden_sizes: [2048,1024]
+        dropout_p: .2
+        concate: ['pool','gru', 'cnn']
+        pool_channels: 512
+        cnn_out_channels: 8
+        cnn_kernel_sizes: [3]
+        have_last_bn: True
+        pretrained_model_path: ''
